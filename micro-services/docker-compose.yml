@@ -1,0 +1,97 @@
+services:
+  # authentication microservice
+  auth-service:
+    build:
+      context: ./services/auth-service
+    ports:
+      - "${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}"
+    networks:
+      - app-network
+    env_file:
+      - .env
+
+  # tchat microservice
+  tchat-service:
+    build:
+      context: ./services/tchat-service
+    ports:
+      - "${TCHAT_SERVICE_PORT}:80"
+    networks:
+      - app-network
+    env_file:
+      - .env
+
+  # api gateway (connector)
+  api-gateway:
+    build:
+      context: ./api-gateway
+    ports:
+      - "${API_GATEWAY_PORT}:${API_GATEWAY_PORT}"
+    networks:
+      - app-network
+    env_file:
+      - .env
+
+  # frontend (React, Vite, Tailwind)
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+    networks:
+      - app-network
+    depends_on:
+      - api-gateway
+    volumes:
+      - ./frontend:/app
+    env_file:
+      - .env
+
+  # MySQL database (connected to the auth-service microservice)
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: thyss
+      MYSQL_DATABASE: api1
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./shared/logger/log-mysql:/var/log/mysql
+    ports:
+      - "${MYSQL_PORT}:3307"
+    networks:
+      - app-network
+    env_file:
+      - .env
+
+  # NoSQL database (connected to the tchat-service microservice)
+  mongo:
+    image: mongo:latest
+    command: mongod --logpath /var/log/mongo/mongod.log --logappend
+    ports:
+      - "${MONGO_PORT}:27017"
+    networks:
+      - app-network
+    env_file:
+      - .env
+    volumes:
+      - mongo-data:/data/db
+      - ./shared/logger/mongo:/var/log/mongo
+
+  # Redis service
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+    volumes:
+      - redis-data:/data
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql-data: {}
+  redis-data: {}
+  mongo-data: {}
