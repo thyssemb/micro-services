@@ -31,10 +31,6 @@ class GenerateTokenService
 
         $token = JWT::encode($payload, $this->secret, 'HS256');
 
-        // Log the secret key (Remove this after validation in production)
-        $logFile = __DIR__ . '/../../../logs/TokenLog/token.txt';
-        error_log("JWT Secret: " . $this->secret . "\n", 3, $logFile);
-
         return $token;
     }
 
