@@ -105,7 +105,7 @@ router.put('/edit-message', verifyToken, async (req, res) => {
             return res.status(404).json({ message: "Message not found or you are not authorized to edit this message" });
         }
 
-        // Mettre à jour le contenu du message
+        // update message content
         message.content = content;
         await message.save();
 
