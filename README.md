@@ -1,4 +1,4 @@
-<center><h1>🌐 Microservices Project</h1></center>
+<center><h1>🌐 Projet de Micro Services</h1></center>
 <p>Ce projet met en œuvre une architecture basée sur des microservices pour gérer l'authentification, les messages de chat et une passerelle API centralisée. Les services incluent une API d'authentification avec PHP, une API de gestion des discussions avec Node.js, et une API gateway pour connecter les deux. Les bases de données utilisent à la fois SQL et NoSQL pour stocker les données des utilisateurs et des messages.</p>
 
 ---
